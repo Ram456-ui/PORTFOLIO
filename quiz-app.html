@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontend Quiz | Ram Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background-color: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+    .back-nav { width: 100%; max-width: 550px; margin-bottom: 1.5rem; }
+    .back-btn { color: #06b6d4; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .card { background: rgba(18, 24, 38, 0.85); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; width: 100%; max-width: 550px; }
+    h2 { color: #6366f1; margin-bottom: 1rem; }
+    .question { font-size: 1.15rem; margin-bottom: 1.5rem; }
+    .options { display: flex; flex-direction: column; gap: 0.8rem; }
+    .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.8rem 1rem; border-radius: 8px; text-align: left; cursor: pointer; transition: 0.2s; }
+    .opt-btn:hover { background: rgba(99, 102, 241, 0.2); border-color: #6366f1; }
+    .result-box { text-align: center; }
+    .restart-btn { margin-top: 1.5rem; background: #6366f1; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 50px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="back-nav">
+    <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Portfolio</a>
+  </div>
+  <div class="card" id="quizContainer">
+    <h2 id="qCount">Question 1 of 3</h2>
+    <p class="question" id="qText"></p>
+    <div class="options" id="optContainer"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Which HTML tag is used to attach JavaScript?", opts: ["<script>", "<js>", "<javascript>", "<code>"], ans: 0 },
+      { q: "Which CSS property is used for glassmorphism blur?", opts: ["filter: shadow()", "backdrop-filter: blur()", "background-blur", "box-blur"], ans: 1 },
+      { q: "Which object stores persistent key-value data in the browser?", opts: ["SessionEngine", "localStorage", "cookieMaster", "JSONStore"], ans: 1 }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const qCount = document.getElementById('qCount');
+    const qText = document.getElementById('qText');
+    const optContainer = document.getElementById('optContainer');
+    const container = document.getElementById('quizContainer');
+
+    function loadQuestion() {
+      const item = questions[current];
+      qCount.textContent = `Question ${current + 1} of ${questions.length}`;
+      qText.textContent = item.q;
+      optContainer.innerHTML = '';
+      item.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(idx);
+        optContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(idx) {
+      if (idx === questions[current].ans) score++;
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        container.innerHTML = `
+          <div class="result-box">
+            <h2>Quiz Finished!</h2>
+            <p style="font-size: 1.3rem; margin-top: 1rem;">Your Score: <strong>${score} / ${questions.length}</strong></p>
+            <button class="restart-btn" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Restart Quiz</button>
+          </div>
+        `;
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

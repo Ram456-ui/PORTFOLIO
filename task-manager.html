@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager | Ram Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background-color: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+    .back-nav { width: 100%; max-width: 500px; margin-bottom: 1.5rem; }
+    .back-btn { color: #06b6d4; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .card { background: rgba(18, 24, 38, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 2rem; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h2 { margin-bottom: 1.5rem; font-size: 1.6rem; color: #6366f1; text-align: center; }
+    .input-box { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    input { flex: 1; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; outline: none; }
+    input:focus { border-color: #6366f1; }
+    button.add-btn { background: #6366f1; color: #fff; border: none; padding: 0.75rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    li { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.75rem 1rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+    li.done span { text-decoration: line-through; color: #94a3b8; }
+    .actions { display: flex; gap: 0.5rem; }
+    .icon-btn { background: none; border: none; cursor: pointer; font-size: 1rem; color: #94a3b8; }
+    .icon-btn.check:hover { color: #10b981; }
+    .icon-btn.del:hover { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="back-nav">
+    <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Portfolio</a>
+  </div>
+  <div class="card">
+    <h2><i class="fa-solid fa-list-check"></i> Task Manager</h2>
+    <div class="input-box">
+      <input type="text" id="taskInput" placeholder="Add a new task..." />
+      <button class="add-btn" id="addBtn"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const taskList = document.getElementById('taskList');
+
+    let tasks = JSON.parse(localStorage.getItem('ram_tasks')) || [];
+
+    function saveAndRender() {
+      localStorage.setItem('ram_tasks', JSON.stringify(tasks));
+      taskList.innerHTML = '';
+      tasks.forEach((t, i) => {
+        const li = document.createElement('li');
+        if (t.done) li.classList.add('done');
+        li.innerHTML = `
+          <span>${t.text}</span>
+          <div class="actions">
+            <button class="icon-btn check" onclick="toggleTask(${i})"><i class="fa-solid fa-check"></i></button>
+            <button class="icon-btn del" onclick="deleteTask(${i})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+
+    addBtn.addEventListener('click', () => {
+      const val = taskInput.value.trim();
+      if (!val) return;
+      tasks.push({ text: val, done: false });
+      taskInput.value = '';
+      saveAndRender();
+    });
+
+    taskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addBtn.click();
+    });
+
+    window.toggleTask = (i) => {
+      tasks[i].done = !tasks[i].done;
+      saveAndRender();
+    };
+
+    window.deleteTask = (i) => {
+      tasks.splice(i, 1);
+      saveAndRender();
+    };
+
+    saveAndRender();
+  </script>
+</body>
+</html>
